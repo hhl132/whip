@@ -2,6 +2,5 @@
 
 ## Installation 
 1. npm install
-2. cp .env.example .env
-3. Input API key (ask Helen)
-4. npm run dev
+2. Make sure you have the .env file with the Congress.gov API key 
+3. npm run dev
