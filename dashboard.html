@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whip — Your Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Dashboard-specific */
+    .dashboard-grid {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .summary-bar {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 1.2rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(17,86,160,0.07);
+    }
+
+    .summary-stat {
+      text-align: center;
+    }
+    .summary-stat .val {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+    }
+    .summary-stat .lbl {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.2rem;
+    }
+
+    .summary-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--gray-300);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      background: var(--gray-100);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 0.55rem 1rem;
+      border: none;
+      background: transparent;
+      border-radius: calc(var(--radius-sm) - 2px);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .tab-btn.active {
+      background: var(--white);
+      color: var(--navy);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeUp 0.35s ease both; }
+
+    .vote-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--gray-100);
+      gap: 1rem;
+    }
+    .vote-row:last-child { border-bottom: none; }
+
+    .vote-row .bill-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      flex: 1;
+    }
+    .vote-row .vote-date {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-500);
+    }
+    .empty-state .emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-state h3 {
+      font-family: var(--font-serif);
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+
+    .rep-party-dem { border-left: 4px solid #1a6ac4; }
+    .rep-party-rep { border-left: 4px solid #c0392b; }
+    .rep-party-ind { border-left: 4px solid #7a3eb1; }
+
+    .msg-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .msg-toolbar label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .profile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(17,86,160,0.07);
+      color: var(--navy);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Whip</a>
+  <span class="nav-tagline">move the vote</span>
+  <div class="nav-links">
+    <a href="index.html">Profile</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="step-badge" id="heroState">Loading…</span>
+    <h1 id="heroGreeting">Your Civic Dashboard</h1>
+    <p id="heroSub">Here's what's happening in Congress that matters to you.</p>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+
+  <!-- Summary bar -->
+  <div class="summary-bar fade-up">
+    <div class="summary-stat">
+      <div class="val" id="statBills">—</div>
+      <div class="lbl">Upcoming Bills</div>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat">
+      <div class="val" id="statReps">2</div>
+      <div class="lbl">Your Senators</div>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat">
+      <div class="val">1</div>
+      <div class="lbl">House Rep</div>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-stat">
+      <div class="val" id="statAreas">—</div>
+      <div class="lbl">Policy Areas</div>
+    </div>
+    <a href="index.html" class="btn btn-outline" style="font-size:0.82rem;padding:0.5rem 1rem">Edit Profile</a>
+  </div>
+
+  <!-- ── I. REP IDENTIFICATION ── -->
+  <div class="card fade-up fade-up-delay-1">
+    <div class="card-header">
+      <div class="card-icon">🏛️</div>
+      <div>
+        <h2>Your Representatives</h2>
+        <p>Based on your state of residence</p>
+      </div>
+    </div>
+    <div id="repList">
+      <div class="empty-state">
+        <div class="emoji">📍</div>
+        <h3>No state selected</h3>
+        <p>Update your profile with your state of residence to see your reps.</p>
+        <a href="index.html" class="btn btn-primary mt-2">Update Profile</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── II. BILLS PANEL ── -->
+  <div class="card fade-up fade-up-delay-2">
+    <div class="card-header">
+      <div class="card-icon">📋</div>
+      <div>
+        <h2>Legislative Activity</h2>
+        <p>Upcoming votes & your representatives' past votes</p>
+      </div>
+    </div>
+
+    <div class="tabs" style="margin-bottom:1.5rem">
+      <button class="tab-btn active" onclick="switchTab('upcoming', this)">Upcoming Bills</button>
+      <button class="tab-btn" onclick="switchTab('history', this)">Voting History</button>
+    </div>
+
+    <!-- Upcoming Bills -->
+    <div class="tab-panel active" id="tab-upcoming">
+      <div id="upcomingBills"></div>
+    </div>
+
+    <!-- Voting History -->
+    <div class="tab-panel" id="tab-history">
+      <div id="voteHistory"></div>
+    </div>
+  </div>
+
+  <!-- ── III. DRAFT MESSAGE ── -->
+  <div class="card fade-up fade-up-delay-3">
+    <div class="card-header">
+      <div class="card-icon">✉️</div>
+      <div>
+        <h2>Draft a Message to Your Rep</h2>
+        <p>We've drafted something based on your interests — edit freely</p>
+      </div>
+    </div>
+
+    <div class="msg-toolbar">
+      <label for="repSelect">Send to:</label>
+      <select id="repSelect" style="width:auto;flex:1;max-width:300px;margin-left:0.75rem">
+        <option>Loading…</option>
+      </select>
+    </div>
+
+    <div class="msg-toolbar" style="margin-bottom:0.5rem">
+      <label>Topic:</label>
+      <select id="topicSelect" onchange="regenerateDraft()" style="width:auto;flex:1;max-width:300px;margin-left:0.75rem">
+        <option value="">— pick a bill —</option>
+      </select>
+    </div>
+
+    <div class="draft-box">
+      <textarea id="draftMessage" placeholder="Your draft message will appear here once you select a topic above…"></textarea>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="copyDraft()">📋 Copy to Clipboard</button>
+      <button class="btn btn-coral" id="emailBtn" onclick="emailDraft()">📧 Open in Email</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+// ── Seed data (V1 placeholders — swap for real API calls) ──
+
+const MOCK_REPS = {
+  "California": [
+    { name: "Alex Padilla", title: "U.S. Senator (D)", party: "dem", initials: "AP", email: "senator@padilla.senate.gov", phone: "(202) 224-3553" },
+    { name: "Adam Schiff", title: "U.S. Senator (D)", party: "dem", initials: "AS", email: "senator@schiff.senate.gov", phone: "(202) 224-3841" },
+    { name: "Zoe Lofgren", title: "U.S. Representative, CA-18 (D)", party: "dem", initials: "ZL", email: "zoe.lofgren@mail.house.gov", phone: "(202) 225-3072" },
+  ],
+  "Texas": [
+    { name: "Ted Cruz", title: "U.S. Senator (R)", party: "rep", initials: "TC", email: "senator@cruz.senate.gov", phone: "(202) 224-5922" },
+    { name: "John Cornyn", title: "U.S. Senator (R)", party: "rep", initials: "JC", email: "senator@cornyn.senate.gov", phone: "(202) 224-2934" },
+    { name: "Lloyd Doggett", title: "U.S. Representative, TX-37 (D)", party: "dem", initials: "LD", email: "lloyd.doggett@mail.house.gov", phone: "(202) 225-4865" },
+  ],
+  "New York": [
+    { name: "Chuck Schumer", title: "U.S. Senator (D) — Majority Leader", party: "dem", initials: "CS", email: "senator@schumer.senate.gov", phone: "(202) 224-6542" },
+    { name: "Kirsten Gillibrand", title: "U.S. Senator (D)", party: "dem", initials: "KG", email: "senator@gillibrand.senate.gov", phone: "(202) 224-4451" },
+    { name: "Alexandria Ocasio-Cortez", title: "U.S. Representative, NY-14 (D)", party: "dem", initials: "AOC", email: "alexandria.ocasio-cortez@mail.house.gov", phone: "(202) 225-3965" },
+  ],
+};
+
+const DEFAULT_REPS = [
+  { name: "Your Senior Senator", title: "U.S. Senator", party: "ind", initials: "S1", email: "senate.gov", phone: "202-224-3121" },
+  { name: "Your Junior Senator", title: "U.S. Senator", party: "ind", initials: "S2", email: "senate.gov", phone: "202-224-3121" },
+  { name: "Your House Rep", title: "U.S. Representative", party: "ind", initials: "HR", email: "house.gov", phone: "202-225-3121" },
+];
+
+const MOCK_BILLS = [
+  { id: "S.1842", title: "Clean Energy Investment Act", summary: "Allocates $200B toward renewable energy infrastructure over 10 years.", topic: "Energy", date: "Jun 10, 2026" },
+  { id: "H.R.4091", title: "Border Security Modernization Act", summary: "Funds additional border personnel and technology upgrades.", topic: "Immigration", date: "Jun 12, 2026" },
+  { id: "S.2301", title: "Affordable Prescription Drug Pricing Act", summary: "Empowers Medicare to negotiate drug prices directly.", topic: "Health", date: "Jun 17, 2026" },
+  { id: "H.R.3155", title: "AI Accountability and Transparency Act", summary: "Requires disclosure and auditing of federal AI systems.", topic: "Science, Technology & Communications", date: "Jun 20, 2026" },
+  { id: "S.998", title: "Federal Workforce Protection Act", summary: "Strengthens civil service protections for federal employees.", topic: "Labor & Employment", date: "Jun 24, 2026" },
+];
+
+const MOCK_VOTES = [
+  { bill: "H.R.1 — One Big Beautiful Bill Act", date: "May 22, 2026", rep: "Your Senior Senator", vote: "nay" },
+  { bill: "S.490 — Border Enforcement Act", date: "May 15, 2026", rep: "Your Junior Senator", vote: "yea" },
+  { bill: "H.R.2090 — Farm Subsidy Reform", date: "May 8, 2026", rep: "Your House Rep", vote: "yea" },
+  { bill: "S.714 — Clean Air Standards Update", date: "Apr 30, 2026", rep: "Your Senior Senator", vote: "yea" },
+  { bill: "H.R.3311 — Defense Authorization FY2027", date: "Apr 22, 2026", rep: "Your House Rep", vote: "miss" },
+];
+
+// ── Init ──
+const profile = loadProfile();
+const state   = profile.state || '';
+const reps    = MOCK_REPS[state] || DEFAULT_REPS;
+const areas   = profile.policyAreas || [];
+
+// Hero
+document.getElementById('heroState').textContent = state || 'No state set';
+document.getElementById('heroGreeting').textContent = state
+  ? `Your Voice in Washington, ${state}`
+  : 'Your Civic Dashboard';
+document.getElementById('heroSub').textContent = state
+  ? `Here's what's happening in Congress that matters to your community.`
+  : 'Set your state in your profile to get personalized bill tracking.';
+
+// Summary
+const relevantBills = areas.length
+  ? MOCK_BILLS.filter(b => areas.includes(b.topic))
+  : MOCK_BILLS;
+document.getElementById('statBills').textContent = relevantBills.length;
+document.getElementById('statAreas').textContent = areas.length || '—';
+
+// ── Render reps ──
+const repList = document.getElementById('repList');
+repList.innerHTML = '';
+reps.forEach(rep => {
+  repList.innerHTML += `
+    <div class="rep-card rep-party-${rep.party}">
+      <div class="rep-avatar">${rep.initials}</div>
+      <div class="rep-info">
+        <h3>${rep.name}</h3>
+        <div class="rep-title">${rep.title}</div>
+        <div class="rep-contacts">
+          <a href="mailto:${rep.email}">✉ ${rep.email}</a>
+          <a href="tel:${rep.phone}">📞 ${rep.phone}</a>
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+// ── Upcoming bills ──
+const upcomingEl = document.getElementById('upcomingBills');
+const billsToShow = relevantBills.length ? relevantBills : MOCK_BILLS;
+upcomingEl.innerHTML = billsToShow.map(b => `
+  <div class="bill-item">
+    <div class="bill-id">${b.id} · Floor vote ${b.date}</div>
+    <h4>${b.title}</h4>
+    <p>${b.summary}</p>
+  </div>
+`).join('');
+
+// ── Vote history ──
+const historyEl = document.getElementById('voteHistory');
+historyEl.innerHTML = `<div style="margin-bottom:0.5rem;font-size:0.8rem;color:var(--gray-500)">Recent votes by your representatives</div>`;
+MOCK_VOTES.forEach(v => {
+  const badgeClass = v.vote === 'yea' ? 'vote-yea' : v.vote === 'nay' ? 'vote-nay' : 'vote-miss';
+  const badgeText  = v.vote === 'yea' ? 'Yea' : v.vote === 'nay' ? 'Nay' : 'Missed';
+  historyEl.innerHTML += `
+    <div class="vote-row">
+      <div>
+        <div class="bill-name">${v.bill}</div>
+        <div class="vote-date">${v.rep} · ${v.date}</div>
+      </div>
+      <span class="vote-badge ${badgeClass}">${badgeText}</span>
+    </div>
+  `;
+});
+
+// ── Draft message: populate selects ──
+const repSelect = document.getElementById('repSelect');
+repSelect.innerHTML = reps.map(r => `<option value="${r.email}">${r.name}</option>`).join('');
+
+const topicSelect = document.getElementById('topicSelect');
+billsToShow.forEach(b => {
+  topicSelect.innerHTML += `<option value="${b.id}">${b.id} — ${b.title}</option>`;
+});
+
+function regenerateDraft() {
+  const billId = document.getElementById('topicSelect').value;
+  const bill = MOCK_BILLS.find(b => b.id === billId) || billsToShow[0];
+  const rep  = reps.find(r => r.email === document.getElementById('repSelect').value) || reps[0];
+  if (!bill || !rep) return;
+
+  const stateStr = state ? `, a constituent from ${state},` : '';
+  document.getElementById('draftMessage').value =
+`Dear ${rep.name},
+
+My name is [Your Name]${stateStr} and I am writing to share my view on ${bill.id} — ${bill.title}.
+
+${bill.summary}
+
+As someone who cares deeply about ${bill.topic.toLowerCase()}, I urge you to [support / oppose] this bill. [Add your personal reason here.]
+
+Thank you for your service and for representing our community in Washington. I look forward to your response.
+
+Respectfully,
+[Your Name]
+[Your Address]
+[Your Phone / Email]`;
+}
+
+function copyDraft() {
+  const txt = document.getElementById('draftMessage').value;
+  if (!txt.trim()) { showToast('Select a topic first to generate a draft.'); return; }
+  navigator.clipboard.writeText(txt).then(() => showToast('✅ Copied to clipboard!'));
+}
+
+function emailDraft() {
+  const repEmail = document.getElementById('repSelect').value;
+  const billId   = document.getElementById('topicSelect').value;
+  const bill     = MOCK_BILLS.find(b => b.id === billId);
+  const subject  = bill ? encodeURIComponent(`Re: ${bill.id} — ${bill.title}`) : 'Constituent Message';
+  const body     = encodeURIComponent(document.getElementById('draftMessage').value);
+  window.open(`mailto:${repEmail}?subject=${subject}&body=${body}`, '_blank');
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

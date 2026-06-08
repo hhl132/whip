@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whip — Get Started</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Onboarding-specific overrides */
+    .onboarding-layout {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    .step-nav {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 2rem;
+    }
+    .step-dot {
+      height: 5px;
+      flex: 1;
+      background: var(--gray-300);
+      border-radius: 100px;
+      transition: background 0.4s;
+    }
+    .step-dot.done  { background: var(--coral); }
+    .step-dot.active { background: var(--navy); }
+
+    .step-panel {
+      display: none;
+      animation: fadeUp 0.4s ease both;
+    }
+    .step-panel.active { display: block; }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 520px) {
+      .identity-grid { grid-template-columns: 1fr; }
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 100px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: all var(--transition);
+      user-select: none;
+    }
+    .radio-option input { display: none; }
+    .radio-option.selected {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: white;
+      font-weight: 500;
+    }
+    .radio-option:hover:not(.selected) {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .policy-hint {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .nav-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Whip</a>
+  <span class="nav-tagline">move the vote</span>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard →</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="step-badge">Getting started</span>
+    <h1>Tell us about yourself</h1>
+    <p>We'll use this to connect you with the right representatives and the bills that matter to you.</p>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:33%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="onboarding-layout">
+
+  <!-- Step indicators -->
+  <div class="step-nav">
+    <div class="step-dot active" id="dot-0"></div>
+    <div class="step-dot" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+  </div>
+
+  <!-- ── STEP 1: Identity ── -->
+  <div class="step-panel active" id="step-0">
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-icon">🪪</div>
+        <div>
+          <h2>Your Profile</h2>
+          <p>Basic demographic info helps us contextualize your voice</p>
+        </div>
+      </div>
+
+      <div class="identity-grid">
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" min="18" max="120" placeholder="e.g. 34">
+        </div>
+
+        <div class="form-group">
+          <label for="state">State of Residence</label>
+          <select id="state">
+            <option value="">Select your state…</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Race / Ethnicity</label>
+        <div class="radio-group" id="raceGroup">
+          <label class="radio-option"><input type="radio" name="race" value="White"> White</label>
+          <label class="radio-option"><input type="radio" name="race" value="Black or African American"> Black / African American</label>
+          <label class="radio-option"><input type="radio" name="race" value="Hispanic or Latino"> Hispanic / Latino</label>
+          <label class="radio-option"><input type="radio" name="race" value="Asian"> Asian</label>
+          <label class="radio-option"><input type="radio" name="race" value="Native American"> Native American</label>
+          <label class="radio-option"><input type="radio" name="race" value="Pacific Islander"> Pacific Islander</label>
+          <label class="radio-option"><input type="radio" name="race" value="Multiracial"> Multiracial</label>
+          <label class="radio-option"><input type="radio" name="race" value="Prefer not to say"> Prefer not to say</label>
+        </div>
+      </div>
+
+      <div class="form-group mt-2">
+        <label>Gender</label>
+        <div class="radio-group" id="genderGroup">
+          <label class="radio-option"><input type="radio" name="gender" value="Man"> Man</label>
+          <label class="radio-option"><input type="radio" name="gender" value="Woman"> Woman</label>
+          <label class="radio-option"><input type="radio" name="gender" value="Non-binary"> Non-binary</label>
+          <label class="radio-option"><input type="radio" name="gender" value="Prefer to self-describe"> Self-describe</label>
+          <label class="radio-option"><input type="radio" name="gender" value="Prefer not to say"> Prefer not to say</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <span class="text-muted">Step 1 of 3</span>
+      <button class="btn btn-primary" onclick="nextStep(1)">Next: Policy Areas →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: Policy Areas ── -->
+  <div class="step-panel" id="step-1">
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-icon">🗳️</div>
+        <div>
+          <h2>What Policy Areas Do You Care About?</h2>
+          <p>Select all that apply — we'll prioritize bills in these areas</p>
+        </div>
+      </div>
+
+      <p class="policy-hint">Ranked by current legislative activity in the 119th Congress</p>
+      <div class="policy-grid" id="policyGrid"></div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-outline" onclick="nextStep(0)">← Back</button>
+      <button class="btn btn-primary" onclick="nextStep(2)">Next: Review →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Review ── -->
+  <div class="step-panel" id="step-2">
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-icon">✅</div>
+        <div>
+          <h2>Review Your Profile</h2>
+          <p>Confirm before we find your representatives</p>
+        </div>
+      </div>
+      <div id="reviewContent" style="line-height: 2;"></div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-outline" onclick="nextStep(1)">← Edit</button>
+      <button class="btn btn-coral btn-lg" onclick="saveAndGo()">Save & See My Reps →</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+  let currentStep = 0;
+  const totalSteps = 3;
+  const progressPcts = ['33%', '66%', '100%'];
+
+  // Init
+  populateStateSelect('state');
+  buildPolicyGrid('policyGrid', loadProfile().policyAreas || []);
+  wireRadioGroups();
+  prefillFromProfile();
+
+  function wireRadioGroups() {
+    document.querySelectorAll('.radio-option').forEach(label => {
+      label.addEventListener('click', () => {
+        const name = label.querySelector('input').name;
+        document.querySelectorAll(`.radio-option input[name="${name}"]`)
+          .forEach(r => r.closest('.radio-option').classList.remove('selected'));
+        label.classList.add('selected');
+        label.querySelector('input').checked = true;
+      });
+    });
+  }
+
+  function prefillFromProfile() {
+    const p = loadProfile();
+    if (p.age)   document.getElementById('age').value = p.age;
+    if (p.state) document.getElementById('state').value = p.state;
+    if (p.race) {
+      const r = document.querySelector(`.radio-option input[value="${p.race}"]`);
+      if (r) r.closest('.radio-option').classList.add('selected');
+    }
+    if (p.gender) {
+      const g = document.querySelector(`.radio-option input[value="${p.gender}"]`);
+      if (g) g.closest('.radio-option').classList.add('selected');
+    }
+  }
+
+  function nextStep(target) {
+    // Capture policy selections before hiding step-1
+    if (currentStep === 1 && target === 2) {
+      window._cachedPolicies = Array.from(document.querySelectorAll('#policyGrid .policy-chip.selected'))
+        .map(c => c.dataset.value);
+    }
+    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    document.getElementById(`dot-${currentStep}`).classList.remove('active');
+    document.getElementById(`dot-${currentStep}`).classList.add('done');
+    currentStep = target;
+    document.getElementById(`step-${currentStep}`).classList.add('active');
+    document.getElementById(`dot-${currentStep}`).classList.add('active');
+    document.getElementById('progressFill').style.width = progressPcts[target];
+    if (target === 2) buildReview();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function buildReview() {
+    const age    = document.getElementById('age').value;
+    const state  = document.getElementById('state').value;
+    const race   = document.querySelector('input[name="race"]:checked')?.value || '—';
+    const gender = document.querySelector('input[name="gender"]:checked')?.value || '—';
+    // const areas  = getSelectedPolicies('policyGrid');
+    const areas = window._cachedPolicies || getSelectedPolicies('policyGrid');
+
+    document.getElementById('reviewContent').innerHTML = `
+      <div style="display:grid;gap:0.75rem">
+        <div><strong style="color:var(--navy)">Age:</strong> ${age || '—'}</div>
+        <div><strong style="color:var(--navy)">State:</strong> ${state || '—'}</div>
+        <div><strong style="color:var(--navy)">Race / Ethnicity:</strong> ${race}</div>
+        <div><strong style="color:var(--navy)">Gender:</strong> ${gender}</div>
+        <div><strong style="color:var(--navy)">Policy Areas (${areas.length}):</strong><br>
+          <span style="color:var(--gray-500);font-size:0.88rem">${areas.length ? areas.join(' · ') : 'None selected'}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function saveAndGo() {
+    const profile = {
+      age:         document.getElementById('age').value,
+      state:       document.getElementById('state').value,
+      race:        document.querySelector('input[name="race"]:checked')?.value || '',
+      gender:      document.querySelector('input[name="gender"]:checked')?.value || '',
+      // policyAreas: getSelectedPolicies('policyGrid'),
+      policyAreas: window._cachedPolicies || getSelectedPolicies('policyGrid'),
+    };
+    saveProfile(profile);
+    showToast('Profile saved! Loading your dashboard…');
+    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+  }
+</script>
+</body>
+</html>
